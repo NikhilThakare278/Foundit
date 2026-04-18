@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Item | FoundIt</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-main);
+        }
+        input[type="text"],
+        input[type="date"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+            color: var(--text-main);
+            transition: var(--transition);
+        }
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+        .radio-group {
+            display: flex;
+            gap: 2rem;
+            margin-top: 0.5rem;
+        }
+        .radio-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+        .image-upload-box {
+            border: 2px dashed var(--border);
+            border-radius: var(--radius);
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            background: var(--bg-main);
+            position: relative;
+        }
+        .image-upload-box:hover {
+            border-color: var(--primary);
+            background: rgba(37, 99, 235, 0.05);
+        }
+        #image-preview {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: var(--radius);
+            display: none;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-search-location"></i>
+                FoundIt
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="lost-items.html" class="nav-link">Lost Items</a></li>
+                <li><a href="found-items.html" class="nav-link">Found Items</a></li>
+                <li><a href="report.html" class="nav-link">Report Item</a></li>
+                <li><a href="login.html" class="nav-link">Login</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button onclick="toggleTheme()" class="btn-theme" style="background: none; border: none; cursor: pointer; color: var(--text-main); font-size: 1.25rem;">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main style="padding: 4rem 0;">
+        <div class="container" style="max-width: 800px;">
+            <div style="text-align: center; margin-bottom: 3rem;">
+                <h1 style="font-size: 2.5rem; margin-bottom: 0.5rem;">Report an Item</h1>
+                <p style="color: var(--text-muted);">Fill in the details below to help the community.</p>
+            </div>
+
+            <form id="report-form" class="card" style="padding: 2.5rem;">
+                <div class="form-group">
+                    <label>What happened?</label>
+                    <div class="radio-group">
+                        <label class="radio-item">
+                            <input type="radio" name="type" value="lost" checked> I lost something
+                        </label>
+                        <label class="radio-item">
+                            <input type="radio" name="type" value="found"> I found something
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="name">Item Name</label>
+                    <input type="text" id="name" name="name" placeholder="e.g., Blue Water Bottle, Math Textbook" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="category">Category</label>
+                    <select id="category" name="category" required>
+                        <option value="">Select a category</option>
+                        <option value="Electronics">Electronics</option>
+                        <option value="ID Cards">ID Cards</option>
+                        <option value="Bags">Bags</option>
+                        <option value="Books">Books</option>
+                        <option value="Others">Others</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea id="description" name="description" rows="4" placeholder="Describe the item, including any unique marks or features..." required></textarea>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                    <div class="form-group">
+                        <label for="location">Location</label>
+                        <input type="text" id="location" name="location" placeholder="e.g., Main Library, Room 204" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="date">Date</label>
+                        <input type="date" id="date" name="date" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Upload Image</label>
+                    <div class="image-upload-box" onclick="document.getElementById('image-input').click()">
+                        <i class="fas fa-cloud-upload-alt" style="font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem;"></i>
+                        <p id="upload-text">Click to upload an image or drag and drop</p>
+                        <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem;">PNG, JPG up to 5MB</p>
+                        <input type="file" id="image-input" name="image" accept="image/*" style="display: none;">
+                        <img id="image-preview" src="#" alt="Preview">
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 0;">
+                    <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1rem;">Submit Report</button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script type="module">
+        import Storage from './js/storage.js';
+
+        const form = document.getElementById('report-form');
+        const imageInput = document.getElementById('image-input');
+        const imagePreview = document.getElementById('image-preview');
+        const uploadText = document.getElementById('upload-text');
+
+        // URL Params handling
+        const urlParams = new URLSearchParams(window.location.search);
+        const typeParam = urlParams.get('type');
+        if (typeParam) {
+            const radio = document.querySelector(`input[name="type"][value="${typeParam}"]`);
+            if (radio) radio.checked = true;
+        }
+
+        // Image Preview
+        imageInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    imagePreview.src = event.target.result;
+                    imagePreview.style.display = 'block';
+                    uploadText.style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Form Submission
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+            
+            // In a real app, you'd upload the image to a server
+            // For this mock, we use the preview src (base64)
+            data.image = imagePreview.src !== '#' ? imagePreview.src : null;
+            data.status = data.type === 'lost' ? 'lost' : 'found';
+
+            Storage.saveItem(data);
+            
+            alert('Report submitted successfully!');
+            window.location.href = data.type === 'lost' ? 'lost-items.html' : 'found-items.html';
+        });
+    </script>
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>

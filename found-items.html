@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Found Items | FoundIt</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-search-location"></i>
+                FoundIt
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="lost-items.html" class="nav-link">Lost Items</a></li>
+                <li><a href="found-items.html" class="nav-link">Found Items</a></li>
+                <li><a href="report.html" class="nav-link">Report Item</a></li>
+                <li><a href="login.html" class="nav-link">Login</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button onclick="toggleTheme()" class="btn-theme" style="background: none; border: none; cursor: pointer; color: var(--text-main); font-size: 1.25rem;">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main style="padding: 4rem 0;">
+        <div class="container">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3rem; flex-wrap: wrap; gap: 2rem;">
+                <div>
+                    <h1 style="font-size: 2.5rem; margin-bottom: 0.5rem;">Found Items</h1>
+                    <p style="color: var(--text-muted);">Showing all items reported as found on campus.</p>
+                </div>
+                
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <div style="position: relative;">
+                        <input type="text" id="search-input" placeholder="Search items..." style="padding: 0.75rem 1rem 0.75rem 2.5rem; border-radius: var(--radius); border: 1px solid var(--border); width: 250px;">
+                        <i class="fas fa-search" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-muted);"></i>
+                    </div>
+                    <select id="category-filter" style="padding: 0.75rem 1rem; border-radius: var(--radius); border: 1px solid var(--border);">
+                        <option value="all">All Categories</option>
+                        <option value="Electronics">Electronics</option>
+                        <option value="ID Cards">ID Cards</option>
+                        <option value="Bags">Bags</option>
+                        <option value="Books">Books</option>
+                        <option value="Others">Others</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="items-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 2rem;">
+                <!-- Items populated by JS -->
+            </div>
+        </div>
+    </main>
+
+    <script type="module">
+        import Storage from './js/storage.js';
+        import { createItemCard } from './js/main.js';
+
+        const grid = document.getElementById('items-grid');
+        const searchInput = document.getElementById('search-input');
+        const categoryFilter = document.getElementById('category-filter');
+
+        function renderItems() {
+            const items = Storage.getFoundItems();
+            const searchTerm = searchInput.value.toLowerCase();
+            const category = categoryFilter.value;
+
+            const filteredItems = items.filter(item => {
+                const matchesSearch = item.name.toLowerCase().includes(searchTerm) || 
+                                    item.description.toLowerCase().includes(searchTerm);
+                const matchesCategory = category === 'all' || item.category === category;
+                return matchesSearch && matchesCategory;
+            });
+
+            if (filteredItems.length === 0) {
+                grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 4rem; color: var(--text-muted);">
+                    <i class="fas fa-search" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                    <p>No found items reported yet.</p>
+                </div>`;
+            } else {
+                grid.innerHTML = filteredItems.map(item => createItemCard(item)).join('');
+            }
+        }
+
+        searchInput.addEventListener('input', renderItems);
+        categoryFilter.addEventListener('change', renderItems);
+
+        // Initial render
+        renderItems();
+    </script>
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>
